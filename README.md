@@ -55,3 +55,7 @@ dotnet build BrailleLens.csproj -f net10.0-android "-p:JavaSdkDirectory=C:\Progr
 ```bash
 dotnet test BrailleLens.Tests/BrailleLens.Tests.csproj
 ```
+
+## Licences
+
+Police Inter, distribuée sous licence SIL Open Font License 1.1 (`Resources/Licenses/Inter-OFL.txt`).

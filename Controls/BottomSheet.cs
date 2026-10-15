@@ -46,8 +46,7 @@ public class BottomSheet : ContentView
 
 		_title = new Label
 		{
-			FontFamily = "Semibold",
-			FontAttributes = FontAttributes.Bold,
+			FontFamily = "Bold",
 			FontSize = 24,
 			VerticalTextAlignment = TextAlignment.Center,
 		};
