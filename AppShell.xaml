@@ -3,12 +3,12 @@
     x:Class="BrailleLens.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:BrailleLens"
+    xmlns:pages="clr-namespace:BrailleLens.Pages"
     Title="BrailleLens">
 
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Title="Accueil"
+        ContentTemplate="{DataTemplate pages:HomePage}"
+        Route="home" />
 
 </Shell>
