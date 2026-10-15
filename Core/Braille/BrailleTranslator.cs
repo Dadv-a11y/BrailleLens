@@ -73,6 +73,11 @@ public static class BrailleTranslator
 		return new BrailleTranslation(tokens);
 	}
 
+	public static BrailleTranslation FromCells(IEnumerable<BrailleCellModel> cells) =>
+		new(cells.Select(cell => cell.IsEmpty
+			? new BrailleToken(' ', BrailleTokenKind.Space, cell)
+			: new BrailleToken(ToLetter(cell), BrailleTokenKind.Letter, cell)).ToArray());
+
 	public static char ToLetter(BrailleCellModel cell)
 	{
 		if (cell.IsEmpty)

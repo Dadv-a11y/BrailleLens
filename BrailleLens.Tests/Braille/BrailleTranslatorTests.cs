@@ -61,6 +61,18 @@ public class BrailleTranslatorTests
 	}
 
 	[Fact]
+	public void FromCells_builds_tokens_with_read_letters()
+	{
+		var cells = new[] { BrailleAlphabet.GetCell('A'), BrailleCellModel.Empty, BrailleCellModel.FromDots(6) };
+
+		var translation = BrailleTranslator.FromCells(cells);
+
+		Assert.Equal(new[] { 'A', ' ', '?' }, translation.Tokens.Select(token => token.Source));
+		Assert.Equal(3, translation.CellCount);
+		Assert.Equal(BrailleTokenKind.Space, translation.Tokens[1].Kind);
+	}
+
+	[Fact]
 	public void UnicodeToText_round_trips_with_ToUnicode()
 	{
 		var unicode = BrailleTranslator.ToBraille("salut toi").ToUnicode();
