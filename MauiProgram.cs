@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BrailleLens.Pages;
+using BrailleLens.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace BrailleLens;
 
@@ -14,6 +16,10 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
+
+		builder.Services.AddSingleton<AppShell>();
+		builder.Services.AddTransient<HomeViewModel>();
+		builder.Services.AddTransient<HomePage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();
