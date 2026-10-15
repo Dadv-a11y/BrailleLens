@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="BrailleLens.csproj" />
+  <Project Path="BrailleLens.Tests/BrailleLens.Tests.csproj" />
+</Solution>

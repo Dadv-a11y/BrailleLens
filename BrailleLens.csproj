@@ -13,6 +13,7 @@
 		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
 
 		<OutputType>Exe</OutputType>
+		<DefaultItemExcludes>$(DefaultItemExcludes);BrailleLens.Tests\**</DefaultItemExcludes>
 		<RootNamespace>BrailleLens</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
