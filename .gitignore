@@ -1,2 +1,10 @@
-obj/
 bin/
+obj/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+*.md
+!README.md
