@@ -47,6 +47,18 @@ public class BrailleCellModelTests
 		Assert.Equal(3, BrailleCellModel.FromDots(1, 2).DistanceTo(BrailleCellModel.FromDots(2, 4, 5)));
 	}
 
+	[Theory]
+	[InlineData("12", new[] { 1, 2 })]
+	[InlineData("1, 4, 5", new[] { 1, 4, 5 })]
+	[InlineData("b", new[] { 1, 2 })]
+	[InlineData("", new int[0])]
+	public void Converter_parses_dot_numbers_or_letter(string text, int[] dots)
+	{
+		var converter = System.ComponentModel.TypeDescriptor.GetConverter(typeof(BrailleCellModel));
+
+		Assert.Equal(dots, ((BrailleCellModel)converter.ConvertFromInvariantString(text)!).RaisedDots());
+	}
+
 	[Fact]
 	public void RaisedCount_counts_raised_dots()
 	{

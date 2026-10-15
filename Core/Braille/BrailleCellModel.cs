@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using System.Numerics;
 
 namespace BrailleLens.Core.Braille;
 
+[TypeConverter(typeof(BrailleCellModelConverter))]
 public readonly record struct BrailleCellModel(BrailleDots Dots)
 {
 	private const char UnicodeBase = '⠀';
