@@ -2,12 +2,202 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:c="clr-namespace:BrailleLens.Controls"
+             xmlns:sheets="clr-namespace:BrailleLens.Sheets"
+             xmlns:vm="clr-namespace:BrailleLens.ViewModels"
              x:Class="BrailleLens.Pages.TrainingPage"
+             x:DataType="vm:TrainingViewModel"
              Title="S'entraîner"
              Shell.FlyoutBehavior="Disabled">
 
-    <Grid RowDefinitions="Auto,*">
-        <c:PageHeader Title="S'entraîner" />
+    <Grid RowDefinitions="Auto,*,Auto">
+        <c:PageHeader Title="S'entraîner">
+            <Label Text="{Binding LevelText}" Style="{StaticResource Accent}" />
+        </c:PageHeader>
+
+        <ScrollView x:Name="Scroller" Grid.Row="1">
+            <Grid Padding="24,0,24,16" MaximumWidthRequest="520">
+
+                <VerticalStackLayout IsVisible="{Binding IsQuizVisible}" Spacing="20">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{Binding QuestionText}" Style="{StaticResource Secondary}" />
+                        <c:SegmentedProgressBar Total="{Binding QuestionCount}" Value="{Binding QuestionNumber}" />
+                    </VerticalStackLayout>
+
+                    <c:SelectorField Text="{Binding ExerciseTitle}"
+                                     AccessibleLabel="Exercice"
+                                     Command="{Binding OpenPickerCommand}" />
+
+                    <Label Text="{Binding Prompt}" Style="{StaticResource Prompt}" SemanticProperties.HeadingLevel="Level2" />
+
+                    <c:BrailleCell IsVisible="{Binding IsRecognizeLetter}"
+                                   Cell="{Binding QuestionCell}"
+                                   DotSize="52" />
+
+                    <Label IsVisible="{Binding ShowTargetLetter}"
+                           Text="{Binding Target}"
+                           Style="{StaticResource GiantLetter}"
+                           FontSize="80" />
+
+                    <Label IsVisible="{Binding IsConvertWord}"
+                           Text="{Binding Target}"
+                           Style="{StaticResource LargeWord}" />
+
+                    <Grid IsVisible="{Binding HasChoices}"
+                          ColumnDefinitions="*,*"
+                          RowDefinitions="Auto,Auto"
+                          ColumnSpacing="16"
+                          RowSpacing="16">
+                        <c:ChoiceCard Letter="{Binding Choices[0].LetterText}"
+                                      Cell="{Binding Choices[0].Cell}"
+                                      Caption="{Binding Choices[0].Caption}"
+                                      State="{Binding Choices[0].State}"
+                                      ShowCell="{Binding IsFindBraille}"
+                                      Command="{Binding ChooseCommand}"
+                                      CommandParameter="{Binding Choices[0]}"
+                                      MinimumHeightRequest="72" />
+                        <c:ChoiceCard Grid.Column="1"
+                                      Letter="{Binding Choices[1].LetterText}"
+                                      Cell="{Binding Choices[1].Cell}"
+                                      Caption="{Binding Choices[1].Caption}"
+                                      State="{Binding Choices[1].State}"
+                                      ShowCell="{Binding IsFindBraille}"
+                                      Command="{Binding ChooseCommand}"
+                                      CommandParameter="{Binding Choices[1]}"
+                                      MinimumHeightRequest="72" />
+                        <c:ChoiceCard Grid.Row="1"
+                                      Letter="{Binding Choices[2].LetterText}"
+                                      Cell="{Binding Choices[2].Cell}"
+                                      Caption="{Binding Choices[2].Caption}"
+                                      State="{Binding Choices[2].State}"
+                                      ShowCell="{Binding IsFindBraille}"
+                                      Command="{Binding ChooseCommand}"
+                                      CommandParameter="{Binding Choices[2]}"
+                                      MinimumHeightRequest="72" />
+                        <c:ChoiceCard Grid.Row="1"
+                                      Grid.Column="1"
+                                      Letter="{Binding Choices[3].LetterText}"
+                                      Cell="{Binding Choices[3].Cell}"
+                                      Caption="{Binding Choices[3].Caption}"
+                                      State="{Binding Choices[3].State}"
+                                      ShowCell="{Binding IsFindBraille}"
+                                      Command="{Binding ChooseCommand}"
+                                      CommandParameter="{Binding Choices[3]}"
+                                      MinimumHeightRequest="72" />
+                    </Grid>
+
+                    <Label IsVisible="{Binding ShowChoiceHint}"
+                           Text="Choisissez une réponse."
+                           Style="{StaticResource Secondary}"
+                           HorizontalTextAlignment="Center" />
+
+                    <Border IsVisible="{Binding IsConvertWord}" Style="{StaticResource Card}">
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="8">
+                            <c:BrailleStrip Grid.ColumnSpan="2"
+                                            Translation="{Binding ComposedTranslation}"
+                                            ShowLetters="False"
+                                            DotSize="10" />
+                            <Label Grid.Row="1"
+                                   Text="{Binding ComposedText}"
+                                   Style="{StaticResource Secondary}"
+                                   VerticalTextAlignment="Center" />
+                            <c:IconButton Grid.Row="1"
+                                          Grid.Column="1"
+                                          Icon="{StaticResource IconTrash}"
+                                          Color="{StaticResource TextSecondary}"
+                                          Description="Retirer la dernière cellule"
+                                          Command="{Binding RemoveLastCellCommand}" />
+                        </Grid>
+                    </Border>
+
+                    <c:BrailleCell IsVisible="{Binding ShowEditor}"
+                                   InputTransparent="{Binding IsAnswered}"
+                                   Cell="{Binding EditorCell, Mode=TwoWay}"
+                                   IsEditable="True"
+                                   ShowNumbers="{Binding ShowDotNumbers}"
+                                   DotSize="{Binding DotSize}" />
+
+                    <Label IsVisible="{Binding ShowVerify}"
+                           Text="Touchez les points pour les activer."
+                           Style="{StaticResource Secondary}"
+                           HorizontalTextAlignment="Center" />
+
+                    <Border IsVisible="{Binding ShowExpected}" Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="12">
+                            <Label Text="Réponse attendue" Style="{StaticResource Caption}" />
+                            <c:BrailleStrip Translation="{Binding ExpectedTranslation}" DotSize="12" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <c:FeedbackBanner x:Name="Feedback"
+                                      IsVisible="{Binding IsAnswered}"
+                                      IsCorrect="{Binding IsCorrect}"
+                                      Text="{Binding FeedbackText}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding IsFinished}" Spacing="16" Padding="0,32,0,0">
+                    <c:Icon Data="{StaticResource IconCheckCircle}"
+                            Color="{StaticResource Success}"
+                            Size="56"
+                            StrokeThickness="1.5"
+                            HorizontalOptions="Center" />
+                    <Label Text="{Binding ResultTitle}"
+                           Style="{StaticResource PageTitle}"
+                           FontSize="32"
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="{Binding ScoreText}"
+                           FontFamily="Bold"
+                           FontSize="64"
+                           HorizontalTextAlignment="Center"
+                           SemanticProperties.Description="{Binding ScoreText, StringFormat='{0} bonnes réponses'}" />
+                    <Label Text="Bonnes réponses"
+                           Style="{StaticResource Secondary}"
+                           HorizontalTextAlignment="Center"
+                           AutomationProperties.IsInAccessibleTree="False" />
+                    <Label Text="{Binding LevelText}" Style="{StaticResource Prompt}" Margin="0,8,0,16" />
+                    <Label Text="{Binding ResultMasteredText}" HorizontalTextAlignment="Center" />
+                    <c:SegmentedProgressBar Total="{Binding TotalLetters}"
+                                            Value="{Binding ResultMasteredCount}"
+                                            SegmentHeight="5"
+                                            Spacing="3" />
+                    <Label IsVisible="{Binding HasGained}"
+                           Text="{Binding GainedText}"
+                           TextColor="{StaticResource Success}"
+                           FontFamily="Semibold"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+
+        <VerticalStackLayout Grid.Row="2" Padding="24,0,24,24" Spacing="16" MaximumWidthRequest="520">
+            <c:ActionButton IsVisible="{Binding ShowAddCell}"
+                            Text="Ajouter la cellule"
+                            Icon="{StaticResource IconPlus}"
+                            Variant="Secondary"
+                            Command="{Binding AddCellCommand}" />
+            <c:ActionButton IsVisible="{Binding ShowVerify}"
+                            Text="Vérifier"
+                            Icon="{StaticResource IconCheck}"
+                            Command="{Binding VerifyCommand}" />
+            <c:ActionButton IsVisible="{Binding ShowContinue}"
+                            Text="Continuer"
+                            TrailingIcon="{StaticResource IconArrowRight}"
+                            Command="{Binding ContinueCommand}" />
+            <c:ActionButton IsVisible="{Binding IsFinished}"
+                            Text="Continuer"
+                            TrailingIcon="{StaticResource IconArrowRight}"
+                            Command="{Binding FinishCommand}" />
+            <c:ActionButton IsVisible="{Binding IsFinished}"
+                            Text="Recommencer"
+                            Icon="{StaticResource IconRefresh}"
+                            Variant="Secondary"
+                            Command="{Binding RestartCommand}" />
+        </VerticalStackLayout>
+
+        <c:BottomSheet Grid.RowSpan="3"
+                       Title="Choisir un exercice"
+                       IsOpen="{Binding IsPickerOpen}">
+            <sheets:ExercisePickerView />
+        </c:BottomSheet>
     </Grid>
 
 </ContentPage>
