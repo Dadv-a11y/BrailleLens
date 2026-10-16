@@ -1,4 +1,6 @@
-﻿using BrailleLens.Pages;
+using BrailleLens.Core.Learning;
+using BrailleLens.Pages;
+using BrailleLens.Services;
 using BrailleLens.ViewModels;
 using Microsoft.Extensions.Logging;
 
@@ -18,9 +20,25 @@ public static class MauiProgram
 				fonts.AddFont("Inter-Bold.ttf", "Bold");
 			});
 
+		builder.Services.AddSingleton(Preferences.Default);
+		builder.Services.AddSingleton<IProgressStore, PreferencesProgressStore>();
+		builder.Services.AddSingleton<ProgressService>();
+		builder.Services.AddSingleton<SettingsService>();
+		builder.Services.AddSingleton<NavigationService>();
+		builder.Services.AddSingleton<DialogService>();
+
+		builder.Services.AddSingleton<ShellViewModel>();
 		builder.Services.AddSingleton<AppShell>();
+
 		builder.Services.AddTransient<HomeViewModel>();
 		builder.Services.AddTransient<HomePage>();
+		builder.Services.AddTransient<LearnPage>();
+		builder.Services.AddTransient<TrainingPage>();
+		builder.Services.AddTransient<ConvertPage>();
+		builder.Services.AddTransient<ScanPage>();
+		builder.Services.AddTransient<SettingsPage>();
+		builder.Services.AddTransient<HelpPage>();
+		builder.Services.AddTransient<AboutPage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

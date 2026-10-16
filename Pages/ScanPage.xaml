@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:c="clr-namespace:BrailleLens.Controls"
+             x:Class="BrailleLens.Pages.ScanPage"
+             Title="Scanner"
+             Shell.FlyoutBehavior="Disabled">
+
+    <Grid RowDefinitions="Auto,*">
+        <c:PageHeader Title="Scanner" />
+    </Grid>
+
+</ContentPage>

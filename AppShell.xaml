@@ -4,7 +4,43 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pages="clr-namespace:BrailleLens.Pages"
-    Title="BrailleLens">
+    xmlns:c="clr-namespace:BrailleLens.Controls"
+    xmlns:vm="clr-namespace:BrailleLens.ViewModels"
+    x:DataType="vm:ShellViewModel"
+    Title="BrailleLens"
+    FlyoutBehavior="Flyout"
+    FlyoutBackdrop="{StaticResource OverlayBrush}">
+
+    <Shell.FlyoutContent>
+        <Grid RowDefinitions="Auto,Auto,*,Auto,Auto" Padding="24,16,16,24">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="BrailleLens"
+                       FontFamily="Bold"
+                       FontSize="24"
+                       VerticalTextAlignment="Center"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <c:IconButton Grid.Column="1"
+                              Icon="{StaticResource IconClose}"
+                              Description="Fermer le menu"
+                              Command="{Binding CloseMenuCommand}" />
+            </Grid>
+
+            <BoxView Grid.Row="1" HeightRequest="1" Color="{StaticResource Border}" Margin="0,16,8,24" />
+
+            <VerticalStackLayout Grid.Row="2" Spacing="16">
+                <c:MenuRow Text="Paramètres" Icon="{StaticResource IconSettings}" Command="{Binding OpenSettingsCommand}" />
+                <c:MenuRow Text="Aide" Icon="{StaticResource IconHelp}" Command="{Binding OpenHelpCommand}" />
+                <c:MenuRow Text="À propos" Icon="{StaticResource IconInfo}" Command="{Binding OpenAboutCommand}" />
+            </VerticalStackLayout>
+
+            <BoxView Grid.Row="3" HeightRequest="1" Color="{StaticResource Border}" Margin="0,0,8,8" />
+
+            <c:MenuRow Grid.Row="4"
+                       Text="Réinitialiser la progression"
+                       Icon="{StaticResource IconRefresh}"
+                       Command="{Binding ResetProgressCommand}" />
+        </Grid>
+    </Shell.FlyoutContent>
 
     <ShellContent
         Title="Accueil"
