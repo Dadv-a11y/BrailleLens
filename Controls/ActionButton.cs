@@ -62,7 +62,7 @@ public class ActionButton : ContentView
 		_surface = new Border
 		{
 			StrokeShape = new RoundRectangle { CornerRadius = 14 },
-			Padding = new Thickness(16, 0),
+			Padding = new Thickness(12, 0),
 			Content = row,
 			InputTransparent = true,
 		};

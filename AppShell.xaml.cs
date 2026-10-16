@@ -19,4 +19,15 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(Routes.Help, typeof(HelpPage));
 		Routing.RegisterRoute(Routes.About, typeof(AboutPage));
 	}
+
+	protected override void OnNavigated(ShellNavigatedEventArgs args)
+	{
+		base.OnNavigated(args);
+#if WINDOWS
+		if (Handler?.PlatformView is Microsoft.UI.Xaml.Controls.NavigationView navigationView)
+		{
+			navigationView.IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed;
+		}
+#endif
+	}
 }
