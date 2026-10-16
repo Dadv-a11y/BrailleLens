@@ -1,18 +1,79 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:c="clr-namespace:BrailleLens.Controls"
              xmlns:vm="clr-namespace:BrailleLens.ViewModels"
              x:Class="BrailleLens.Pages.HomePage"
              x:DataType="vm:HomeViewModel"
-             Shell.NavBarIsVisible="False">
+             Title="Accueil">
 
-    <Grid Padding="24">
-        <Label Text="BrailleLens"
-               FontSize="32"
-               FontAttributes="Bold"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"
-               SemanticProperties.HeadingLevel="Level1" />
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Grid ColumnDefinitions="Auto,*,Auto" Padding="12,16,12,0">
+            <c:IconButton Icon="{StaticResource IconMenu}"
+                          Description="Ouvrir le menu"
+                          Command="{Binding OpenMenuCommand}" />
+            <c:IconButton Grid.Column="2"
+                          Icon="{StaticResource IconMore}"
+                          Description="Plus d'options"
+                          Command="{Binding ShowMoreCommand}" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24,40,24,24" Spacing="0" MaximumWidthRequest="520">
+                <Label Text="BrailleLens" Style="{StaticResource BrandTitle}" />
+                <c:BrailleCell Cell="123456"
+                               DotSize="11"
+                               Margin="0,20,0,0"
+                               AutomationProperties.IsInAccessibleTree="False" />
+
+                <VerticalStackLayout IsVisible="{Binding IsFirstUse}" Spacing="16" Margin="0,48,0,0">
+                    <Label Text="Es-tu prêt à apprendre ?" Style="{StaticResource Prompt}" />
+                    <Label Text="Découvre BrailleLens et commence ton apprentissage dès aujourd'hui."
+                           Style="{StaticResource Secondary}"
+                           FontSize="17"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding HasStarted}" Spacing="0" Margin="0,48,0,0">
+                    <Label Text="{Binding LevelText}"
+                           Style="{StaticResource Prompt}"
+                           SemanticProperties.HeadingLevel="Level2" />
+                    <Label Text="{Binding MasteredText}"
+                           Style="{StaticResource Secondary}"
+                           FontSize="17"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,16,0,16" />
+                    <c:SegmentedProgressBar Total="{Binding TotalLetters}"
+                                            Value="{Binding MasteredCount}"
+                                            SegmentHeight="5"
+                                            Spacing="3" />
+
+                    <c:ActionButton Text="Continuer à apprendre"
+                                    TrailingIcon="{StaticResource IconArrowRight}"
+                                    Command="{Binding ContinueLearningCommand}"
+                                    Margin="0,40,0,16" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                        <c:ActionButton Text="Convertir"
+                                        Icon="{StaticResource IconSwap}"
+                                        Variant="Secondary"
+                                        Command="{Binding OpenConvertCommand}" />
+                        <c:ActionButton Grid.Column="1"
+                                        Text="Scanner"
+                                        Icon="{StaticResource IconCamera}"
+                                        Variant="Secondary"
+                                        Command="{Binding OpenScanCommand}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <c:ActionButton Grid.Row="2"
+                        IsVisible="{Binding IsFirstUse}"
+                        Text="Commencer à apprendre"
+                        TrailingIcon="{StaticResource IconArrowRight}"
+                        Command="{Binding StartLearningCommand}"
+                        Margin="24,0,24,24"
+                        MaximumWidthRequest="520" />
     </Grid>
 
 </ContentPage>

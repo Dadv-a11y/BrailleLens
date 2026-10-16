@@ -23,6 +23,7 @@ public class FeedbackBanner : ContentView
 
 	public FeedbackBanner()
 	{
+		AutomationProperties.SetIsInAccessibleTree(_label, false);
 		var row = new HorizontalStackLayout { Spacing = 10, Children = { _icon, _label } };
 		_surface = new Border
 		{

@@ -50,6 +50,7 @@ public class SelectorField : ContentView
 			InputTransparent = true,
 		};
 		AutomationProperties.SetIsInAccessibleTree(surface, false);
+		AutomationProperties.SetIsInAccessibleTree(_label, false);
 
 		_button = new Button
 		{

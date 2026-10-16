@@ -67,6 +67,7 @@ public class ActionButton : ContentView
 			InputTransparent = true,
 		};
 		AutomationProperties.SetIsInAccessibleTree(_surface, false);
+		AutomationProperties.SetIsInAccessibleTree(_label, false);
 
 		_button = new Button
 		{

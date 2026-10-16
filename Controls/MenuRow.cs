@@ -29,6 +29,7 @@ public class MenuRow : ContentView
 			Children = { _icon, _label },
 		};
 		AutomationProperties.SetIsInAccessibleTree(row, false);
+		AutomationProperties.SetIsInAccessibleTree(_label, false);
 
 		_button = new Button
 		{

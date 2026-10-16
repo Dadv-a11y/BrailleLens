@@ -40,6 +40,14 @@ public static class MauiProgram
 		builder.Services.AddTransient<HelpPage>();
 		builder.Services.AddTransient<AboutPage>();
 
+#if WINDOWS
+		Microsoft.Maui.Controls.Handlers.ShellHandler.Mapper.AppendToMapping("UseInAppNavigation", (handler, _) =>
+		{
+			handler.PlatformView.IsPaneToggleButtonVisible = false;
+			handler.PlatformView.IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed;
+		});
+#endif
+
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
