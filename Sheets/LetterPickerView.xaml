@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:c="clr-namespace:BrailleLens.Controls"
+             xmlns:vm="clr-namespace:BrailleLens.ViewModels"
+             x:Class="BrailleLens.Sheets.LetterPickerView"
+             x:DataType="vm:LearnViewModel">
+
+    <VerticalStackLayout Spacing="16">
+        <Label Text="{Binding MasteredText}" Style="{StaticResource Secondary}" />
+        <c:SegmentedProgressBar Total="{Binding TotalLetters}"
+                                Value="{Binding MasteredCount}"
+                                SegmentHeight="5"
+                                Spacing="3" />
+
+        <Grid x:Name="LetterGrid"
+              ColumnDefinitions="*,*,*,*,*,*"
+              ColumnSpacing="10"
+              RowSpacing="10"
+              Margin="0,8,0,0" />
+
+        <HorizontalStackLayout Spacing="8">
+            <c:Icon Data="{StaticResource IconCheck}"
+                    Color="{StaticResource Primary}"
+                    Size="18"
+                    IsVisible="{Binding IsCurrentMastered}" />
+            <Label Text="{Binding SelectedLegend}" Style="{StaticResource Secondary}" VerticalTextAlignment="Center" />
+        </HorizontalStackLayout>
+
+        <c:ActionButton Text="Revenir à la leçon"
+                        Variant="Secondary"
+                        Command="{Binding ClosePickerCommand}" />
+    </VerticalStackLayout>
+
+</ContentView>

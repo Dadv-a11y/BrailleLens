@@ -2,12 +2,76 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:c="clr-namespace:BrailleLens.Controls"
+             xmlns:sheets="clr-namespace:BrailleLens.Sheets"
+             xmlns:vm="clr-namespace:BrailleLens.ViewModels"
              x:Class="BrailleLens.Pages.LearnPage"
+             x:DataType="vm:LearnViewModel"
              Title="Apprendre"
              Shell.FlyoutBehavior="Disabled">
 
-    <Grid RowDefinitions="Auto,*">
-        <c:PageHeader Title="Apprendre" />
+    <Grid RowDefinitions="Auto,*,Auto">
+        <c:PageHeader Title="Apprendre">
+            <Grid>
+                <HorizontalStackLayout Spacing="4" VerticalOptions="Center" InputTransparent="True">
+                    <Label Text="{Binding CounterText}"
+                           Style="{StaticResource Accent}"
+                           VerticalTextAlignment="Center"
+                           AutomationProperties.IsInAccessibleTree="False" />
+                    <c:Icon Data="{StaticResource IconChevronDown}" Color="{StaticResource Primary}" Size="18" />
+                </HorizontalStackLayout>
+                <Button Style="{StaticResource TransparentButton}"
+                        Command="{Binding OpenPickerCommand}"
+                        SemanticProperties.Description="{Binding CounterDescription}" />
+            </Grid>
+        </c:PageHeader>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24,8,24,16" Spacing="20" MaximumWidthRequest="520">
+                <Label Text="{Binding LetterText}"
+                       Style="{StaticResource GiantLetter}"
+                       SemanticProperties.HeadingLevel="Level2" />
+                <Label Text="{Binding Explanation}"
+                       Style="{StaticResource Secondary}"
+                       FontSize="17"
+                       HorizontalTextAlignment="Center" />
+                <c:BrailleCell Cell="{Binding Cell}"
+                               IsExplorable="True"
+                               ShowNumbers="{Binding ShowDotNumbers}"
+                               DotSize="{Binding DotSize}"
+                               DotCommand="{Binding ExploreDotCommand}"
+                               Margin="0,12" />
+                <Label Text="{Binding Hint}"
+                       Style="{StaticResource Secondary}"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <VerticalStackLayout Grid.Row="2" Padding="24,0,24,24" Spacing="16" MaximumWidthRequest="520">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                <c:ActionButton Text="Précédent"
+                                Icon="{StaticResource IconArrowLeft}"
+                                Variant="Secondary"
+                                Command="{Binding PreviousCommand}" />
+                <c:ActionButton Grid.Column="1"
+                                Text="Suivant"
+                                TrailingIcon="{StaticResource IconArrowRight}"
+                                Command="{Binding NextCommand}" />
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="{Binding MasteredText}" Style="{StaticResource Secondary}" />
+                <Label Grid.Column="1" Text="{Binding LevelText}" Style="{StaticResource Secondary}" />
+            </Grid>
+            <c:ActionButton Text="S'entraîner"
+                            Icon="{StaticResource IconPencil}"
+                            Variant="Secondary"
+                            Command="{Binding OpenTrainingCommand}" />
+        </VerticalStackLayout>
+
+        <c:BottomSheet Grid.RowSpan="3"
+                       Title="Choisir une lettre"
+                       IsOpen="{Binding IsPickerOpen}">
+            <sheets:LetterPickerView />
+        </c:BottomSheet>
     </Grid>
 
 </ContentPage>
