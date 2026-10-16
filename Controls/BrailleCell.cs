@@ -1,3 +1,4 @@
+using System.Windows.Input;
 using BrailleLens.Core.Braille;
 using Microsoft.Maui.Controls.Shapes;
 
@@ -14,6 +15,12 @@ public class BrailleCell : ContentView
 	public static readonly BindableProperty IsEditableProperty =
 		BindableProperty.Create(nameof(IsEditable), typeof(bool), typeof(BrailleCell), false, propertyChanged: OnLayoutChanged);
 
+	public static readonly BindableProperty IsExplorableProperty =
+		BindableProperty.Create(nameof(IsExplorable), typeof(bool), typeof(BrailleCell), false, propertyChanged: OnLayoutChanged);
+
+	public static readonly BindableProperty DotCommandProperty =
+		BindableProperty.Create(nameof(DotCommand), typeof(ICommand), typeof(BrailleCell));
+
 	public static readonly BindableProperty ShowNumbersProperty =
 		BindableProperty.Create(nameof(ShowNumbers), typeof(bool), typeof(BrailleCell), false, propertyChanged: OnLayoutChanged);
 
@@ -27,6 +34,8 @@ public class BrailleCell : ContentView
 	private readonly Button?[] _dotButtons = new Button?[6];
 
 	public event EventHandler<BrailleCellModel>? CellChanged;
+
+	public event EventHandler<int>? DotTapped;
 
 	public BrailleCell()
 	{
@@ -44,6 +53,20 @@ public class BrailleCell : ContentView
 		get => (bool)GetValue(IsEditableProperty);
 		set => SetValue(IsEditableProperty, value);
 	}
+
+	public bool IsExplorable
+	{
+		get => (bool)GetValue(IsExplorableProperty);
+		set => SetValue(IsExplorableProperty, value);
+	}
+
+	public ICommand? DotCommand
+	{
+		get => (ICommand?)GetValue(DotCommandProperty);
+		set => SetValue(DotCommandProperty, value);
+	}
+
+	private bool IsInteractive => IsEditable || IsExplorable;
 
 	public bool ShowNumbers
 	{
@@ -78,7 +101,7 @@ public class BrailleCell : ContentView
 
 	private void BuildLayout()
 	{
-		var slotSize = IsEditable ? Math.Max(DotSize, MinimumTouchSize) : DotSize;
+		var slotSize = IsInteractive ? Math.Max(DotSize, MinimumTouchSize) : DotSize;
 		var numberSize = ShowNumbers ? Math.Max(18, DotSize * 0.4) : 0;
 
 		var grid = new Grid
@@ -134,7 +157,7 @@ public class BrailleCell : ContentView
 			slot.Add(dot, 1, 1);
 
 			_dotButtons[index] = null;
-			if (IsEditable)
+			if (IsInteractive)
 			{
 				var button = new Button
 				{
@@ -149,7 +172,7 @@ public class BrailleCell : ContentView
 					MinimumWidthRequest = 0,
 					Padding = 0,
 				};
-				button.Clicked += (_, _) => ToggleDot(dotNumber);
+				button.Clicked += (_, _) => OnDotClicked(dotNumber);
 				_dotButtons[index] = button;
 				slot.Add(button, 1, 1);
 			}
@@ -157,18 +180,29 @@ public class BrailleCell : ContentView
 			grid.Add(slot, index < 3 ? 0 : 1, index % 3);
 		}
 
-		AutomationProperties.SetIsInAccessibleTree(this, !IsEditable);
+		AutomationProperties.SetIsInAccessibleTree(this, !IsInteractive);
 		Content = grid;
 		UpdateDots();
 	}
 
-	private void ToggleDot(int dot)
+	private void OnDotClicked(int dot)
 	{
-		Cell = Cell.Toggle(dot);
-		SemanticScreenReader.Announce(DescribeDot(dot));
+		if (IsEditable)
+		{
+			Cell = Cell.Toggle(dot);
+			SemanticScreenReader.Announce(DescribeDot(dot));
+		}
+
+		DotTapped?.Invoke(this, dot);
+		if (DotCommand?.CanExecute(dot) == true)
+		{
+			DotCommand.Execute(dot);
+		}
 	}
 
-	private string DescribeDot(int dot) => $"Point {dot}, {(Cell.IsRaised(dot) ? "activé" : "désactivé")}";
+	private string DescribeDot(int dot) => IsEditable
+		? $"Point {dot}, {(Cell.IsRaised(dot) ? "activé" : "désactivé")}"
+		: $"Point {dot}, {(Cell.IsRaised(dot) ? "levé" : "non levé")}";
 
 	private void UpdateDots()
 	{
@@ -182,7 +216,7 @@ public class BrailleCell : ContentView
 			}
 
 			var raised = Cell.IsRaised(index + 1);
-			dot.Fill = raised ? new SolidColorBrush(raisedColor) : null;
+			dot.Fill = raised ? new SolidColorBrush(raisedColor) : Brush.Transparent;
 			dot.Stroke = new SolidColorBrush(raised ? raisedColor : AppColors.DotInactive);
 
 			if (_dotButtons[index] is { } button)
