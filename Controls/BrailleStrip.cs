@@ -1,5 +1,4 @@
 using BrailleLens.Core.Braille;
-using Microsoft.Maui.Layouts;
 
 namespace BrailleLens.Controls;
 
@@ -18,17 +17,12 @@ public class BrailleStrip : ContentView
 	public static readonly BindableProperty DotSizeProperty =
 		BindableProperty.Create(nameof(DotSize), typeof(double), typeof(BrailleStrip), 12.0, propertyChanged: OnLayoutChanged);
 
-	private readonly FlexLayout _layout = new()
-	{
-		Wrap = FlexWrap.Wrap,
-		Direction = FlexDirection.Row,
-		JustifyContent = FlexJustify.Start,
-		AlignItems = FlexAlignItems.Start,
-	};
+	private readonly VerticalStackLayout _rows = new();
+	private int _itemsPerRow = int.MaxValue;
 
 	public BrailleStrip()
 	{
-		Content = _layout;
+		Content = _rows;
 	}
 
 	public BrailleTranslation? Translation
@@ -55,53 +49,84 @@ public class BrailleStrip : ContentView
 		set => SetValue(DotSizeProperty, value);
 	}
 
+	private double ItemSpacing => DotSize * 1.2;
+
+	private double ItemWidth => DotSize * 2.35;
+
+	protected override void OnSizeAllocated(double width, double height)
+	{
+		base.OnSizeAllocated(width, height);
+		if (width <= 0)
+		{
+			return;
+		}
+
+		var perRow = Math.Max(1, (int)((width + ItemSpacing) / (ItemWidth + ItemSpacing)));
+		if (perRow != _itemsPerRow)
+		{
+			_itemsPerRow = perRow;
+			BuildLayout();
+		}
+	}
+
 	private static void OnLayoutChanged(BindableObject bindable, object oldValue, object newValue) =>
 		((BrailleStrip)bindable).BuildLayout();
 
 	private void BuildLayout()
 	{
-		_layout.Clear();
+		_rows.Clear();
+		_rows.Spacing = DotSize;
 		var tokens = Translation?.Tokens ?? Array.Empty<BrailleToken>();
-		var margin = new Thickness(0, 0, DotSize * 1.2, DotSize);
 
-		foreach (var token in tokens)
+		HorizontalStackLayout? row = null;
+		for (var index = 0; index < tokens.Count; index++)
 		{
-			var item = new VerticalStackLayout { Spacing = DotSize * 0.6, Margin = margin };
-			if (token.HasCell)
+			if (index % _itemsPerRow == 0)
 			{
-				var cell = new BrailleCell { Cell = token.Cell, DotSize = DotSize };
-				AutomationProperties.SetIsInAccessibleTree(cell, false);
-				item.Add(cell);
+				row = new HorizontalStackLayout { Spacing = ItemSpacing };
+				_rows.Add(row);
 			}
-			else
-			{
-				item.Add(new Label
-				{
-					Text = token.Source.ToString(),
-					TextColor = AppColors.Error,
-					FontSize = DotSize * 2,
-					HeightRequest = DotSize * 3.6,
-					VerticalTextAlignment = TextAlignment.Center,
-					HorizontalTextAlignment = TextAlignment.Center,
-				});
-			}
-
-			if (ShowLetters && token.HasCell)
-			{
-				var letter = new Label
-				{
-					Text = token.Kind == BrailleTokenKind.Space ? " " : token.Source.ToString(),
-					FontSize = 13,
-					TextColor = AppColors.TextSecondary,
-					HorizontalTextAlignment = TextAlignment.Center,
-				};
-				AutomationProperties.SetIsInAccessibleTree(letter, false);
-				item.Add(letter);
-			}
-
-			SemanticProperties.SetDescription(item, DescribeToken(token));
-			_layout.Add(item);
+			row!.Add(CreateItem(tokens[index]));
 		}
+	}
+
+	private View CreateItem(BrailleToken token)
+	{
+		var item = new VerticalStackLayout { Spacing = DotSize * 0.6, WidthRequest = ItemWidth };
+		if (token.HasCell)
+		{
+			var cell = new BrailleCell { Cell = token.Cell, DotSize = DotSize, HorizontalOptions = LayoutOptions.Center };
+			AutomationProperties.SetIsInAccessibleTree(cell, false);
+			item.Add(cell);
+		}
+		else
+		{
+			item.Add(new Label
+			{
+				Text = token.Source.ToString(),
+				TextColor = AppColors.Error,
+				FontSize = DotSize * 2,
+				HeightRequest = DotSize * 3.6,
+				VerticalTextAlignment = TextAlignment.Center,
+				HorizontalTextAlignment = TextAlignment.Center,
+			});
+		}
+
+		if (ShowLetters && token.HasCell)
+		{
+			var letter = new Label
+			{
+				Text = token.Kind == BrailleTokenKind.Space ? " " : token.Source.ToString(),
+				FontSize = 13,
+				TextColor = AppColors.TextSecondary,
+				HorizontalTextAlignment = TextAlignment.Center,
+			};
+			AutomationProperties.SetIsInAccessibleTree(letter, false);
+			item.Add(letter);
+		}
+
+		SemanticProperties.SetDescription(item, DescribeToken(token));
+		return item;
 	}
 
 	private static string DescribeToken(BrailleToken token) => token.Kind switch
