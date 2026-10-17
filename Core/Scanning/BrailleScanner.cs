@@ -15,7 +15,7 @@ public sealed record ScanResult(IReadOnlyList<BrailleCellModel> Cells, int DotCo
 
 public static class BrailleScanner
 {
-	public const int WorkingSize = 800;
+	public const int WorkingSize = 1000;
 
 	public static ScanResult Recognize(GrayImage image)
 	{

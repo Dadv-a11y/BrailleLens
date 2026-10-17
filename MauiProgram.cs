@@ -26,6 +26,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<SettingsService>();
 		builder.Services.AddSingleton<NavigationService>();
 		builder.Services.AddSingleton<DialogService>();
+		builder.Services.AddSingleton<ScanService>();
 
 		builder.Services.AddSingleton<ShellViewModel>();
 		builder.Services.AddSingleton<AppShell>();
@@ -38,6 +39,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<TrainingPage>();
 		builder.Services.AddTransient<ConvertViewModel>();
 		builder.Services.AddTransient<ConvertPage>();
+		builder.Services.AddTransient<ScanViewModel>();
 		builder.Services.AddTransient<ScanPage>();
 		builder.Services.AddTransient<SettingsPage>();
 		builder.Services.AddTransient<HelpPage>();

@@ -2,12 +2,90 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:c="clr-namespace:BrailleLens.Controls"
+             xmlns:vm="clr-namespace:BrailleLens.ViewModels"
              x:Class="BrailleLens.Pages.ScanPage"
+             x:DataType="vm:ScanViewModel"
              Title="Scanner"
              Shell.FlyoutBehavior="Disabled">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*,Auto">
         <c:PageHeader Title="Scanner" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24,8,24,16" Spacing="20" MaximumWidthRequest="520">
+
+                <VerticalStackLayout IsVisible="{Binding IsIdle}" Spacing="20">
+                    <c:Icon Data="{StaticResource IconCamera}"
+                            Color="{StaticResource Primary}"
+                            Size="64"
+                            StrokeThickness="1.5"
+                            HorizontalOptions="Center"
+                            Margin="0,16,0,0" />
+                    <Label Text="Photographiez une ligne ou un mot en braille."
+                           Style="{StaticResource Prompt}"
+                           SemanticProperties.HeadingLevel="Level2" />
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Pour un bon résultat" Style="{StaticResource SectionTitle}" FontSize="16" />
+                            <Label Text="• Braille imprimé ou bien contrasté" Style="{StaticResource Secondary}" />
+                            <Label Text="• Photo de face, bien éclairée, sans reflet" Style="{StaticResource Secondary}" />
+                            <Label Text="• Une seule ligne dans le cadre" Style="{StaticResource Secondary}" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Label Text="La photo est analysée sur l'appareil puis supprimée aussitôt."
+                           Style="{StaticResource Caption}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding IsAnalyzing}" Spacing="16" Padding="0,64,0,0">
+                    <ActivityIndicator IsRunning="{Binding IsAnalyzing}"
+                                       Color="{StaticResource Primary}"
+                                       HorizontalOptions="Center" />
+                    <Label Text="Analyse en cours…" Style="{StaticResource Secondary}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <c:FeedbackBanner IsVisible="{Binding HasError}"
+                                  IsCorrect="False"
+                                  Text="{Binding ErrorMessage}" />
+
+                <VerticalStackLayout IsVisible="{Binding HasResult}" Spacing="16">
+                    <Label Text="Texte reconnu" Style="{StaticResource SectionTitle}" />
+                    <Border Style="{StaticResource Card}" MinimumHeightRequest="64">
+                        <Label Text="{Binding ResultText}"
+                               FontFamily="Semibold"
+                               FontSize="26"
+                               VerticalTextAlignment="Center" />
+                    </Border>
+                    <Label Text="Braille détecté" Style="{StaticResource SectionTitle}" />
+                    <Border Style="{StaticResource Card}">
+                        <c:BrailleStrip Translation="{Binding ResultTranslation}" DotSize="12" />
+                    </Border>
+                    <Label Text="{Binding ResultSummary}" Style="{StaticResource Secondary}" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <VerticalStackLayout Grid.Row="2" Padding="24,0,24,24" Spacing="16" MaximumWidthRequest="520">
+            <VerticalStackLayout IsVisible="{Binding IsIdle}" Spacing="16">
+                <c:ActionButton IsVisible="{Binding CanCapture}"
+                                Text="Prendre une photo"
+                                Icon="{StaticResource IconCamera}"
+                                Command="{Binding CaptureCommand}" />
+                <c:ActionButton Text="Choisir une image"
+                                Icon="{StaticResource IconGrid}"
+                                Variant="Secondary"
+                                Command="{Binding PickCommand}" />
+            </VerticalStackLayout>
+            <VerticalStackLayout IsVisible="{Binding HasResult}" Spacing="16">
+                <c:ActionButton Text="Ouvrir dans Convertir"
+                                Icon="{StaticResource IconSwap}"
+                                Command="{Binding OpenInConvertCommand}" />
+                <c:ActionButton Text="Scanner à nouveau"
+                                Icon="{StaticResource IconRefresh}"
+                                Variant="Secondary"
+                                Command="{Binding RetryCommand}" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
     </Grid>
 
 </ContentPage>
