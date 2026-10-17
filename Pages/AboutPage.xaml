@@ -8,6 +8,34 @@
 
     <Grid RowDefinitions="Auto,*">
         <c:PageHeader Title="À propos" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24,8,24,24" Spacing="16" MaximumWidthRequest="520">
+                <VerticalStackLayout Spacing="12" Margin="0,8,0,8">
+                    <Label Text="BrailleLens" Style="{StaticResource BrandTitle}" />
+                    <c:BrailleCell Cell="123456" DotSize="11" AutomationProperties.IsInAccessibleTree="False" />
+                    <Label x:Name="VersionLabel" Style="{StaticResource Secondary}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <Label Style="{StaticResource Secondary}"
+                       Text="BrailleLens aide les débutants, les enseignants, les proches et les aidants à apprendre, lire, saisir et vérifier du braille." />
+
+                <Label Text="Nos engagements" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Style="{StaticResource Secondary}" Text="• Fonctionne entièrement hors ligne." />
+                        <Label Style="{StaticResource Secondary}" Text="• Aucun compte, aucune publicité, aucun suivi." />
+                        <Label Style="{StaticResource Secondary}" Text="• Votre progression et vos réglages restent sur cet appareil." />
+                        <Label Style="{StaticResource Secondary}" Text="• La caméra n'est activée que pendant un scan, et aucune image n'est conservée." />
+                        <Label Style="{StaticResource Secondary}" Text="• Pas d'animation décorative, pour économiser la batterie." />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="Licences" Style="{StaticResource SectionTitle}" />
+                <Label Style="{StaticResource Secondary}"
+                       Text="Police Inter, distribuée sous licence SIL Open Font License 1.1." />
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 
 </ContentPage>

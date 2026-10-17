@@ -8,6 +8,42 @@
 
     <Grid RowDefinitions="Auto,*">
         <c:PageHeader Title="Aide" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24,8,24,24" Spacing="16" MaximumWidthRequest="520">
+
+                <Label Text="La cellule braille" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource Card}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="20">
+                        <c:BrailleCell Cell="123456" DotSize="18" ShowNumbers="True" VerticalOptions="Center" />
+                        <Label Grid.Column="1"
+                               Style="{StaticResource Secondary}"
+                               VerticalTextAlignment="Center"
+                               Text="Chaque caractère occupe une cellule de 6 points. Les points 1, 2 et 3 forment la colonne de gauche, de haut en bas ; les points 4, 5 et 6 la colonne de droite. Un point plein est levé, un cercle vide ne l'est pas." />
+                    </Grid>
+                </Border>
+
+                <Label Text="Apprendre" Style="{StaticResource SectionTitle}" />
+                <Label Style="{StaticResource Secondary}"
+                       Text="Découvrez l'alphabet lettre par lettre. Touchez un point pour savoir s'il est levé. Le compteur en haut ouvre la liste des 26 lettres ; une coche indique une lettre maîtrisée." />
+
+                <Label Text="S'entraîner" Style="{StaticResource SectionTitle}" />
+                <Label Style="{StaticResource Secondary}"
+                       Text="Une séance compte 10 questions. Choisissez l'exercice en haut de l'écran : reconnaître une lettre, trouver sa cellule, écrire une cellule point par point ou convertir un mot. Une lettre est maîtrisée après deux bonnes réponses ; le niveau augmente toutes les 6 lettres." />
+
+                <Label Text="Convertir" Style="{StaticResource SectionTitle}" />
+                <Label Style="{StaticResource Secondary}"
+                       Text="En mode Texte vers Braille, saisissez un texte pour obtenir sa transcription, à copier ou à partager. En mode Braille vers Texte, composez une cellule puis validez-la ; une cellule vide ajoute un espace. Les accents, chiffres et signes ne sont pas encore pris en charge." />
+
+                <Label Text="Scanner" Style="{StaticResource SectionTitle}" />
+                <Label Style="{StaticResource Secondary}"
+                       Text="Photographiez une ligne de braille imprimé, de face et bien éclairée. L'analyse se fait sur l'appareil, sans connexion, et la photo est supprimée aussitôt. Le résultat peut être ouvert dans Convertir pour être corrigé." />
+
+                <Label Text="Accessibilité" Style="{StaticResource SectionTitle}" />
+                <Label Style="{StaticResource Secondary}"
+                       Text="Chaque bouton et chaque point est annoncé par le lecteur d'écran. Dans les Paramètres, vous pouvez agrandir les cellules, masquer les numéros des points ou couper les vibrations." />
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 
 </ContentPage>
