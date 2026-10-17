@@ -41,6 +41,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<ConvertPage>();
 		builder.Services.AddTransient<ScanViewModel>();
 		builder.Services.AddTransient<ScanPage>();
+		builder.Services.AddTransient<SettingsViewModel>();
 		builder.Services.AddTransient<SettingsPage>();
 		builder.Services.AddTransient<HelpPage>();
 		builder.Services.AddTransient<AboutPage>();
@@ -50,6 +51,12 @@ public static class MauiProgram
 		{
 			handler.PlatformView.IsPaneToggleButtonVisible = false;
 			handler.PlatformView.IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed;
+		});
+		Microsoft.Maui.Handlers.SwitchHandler.Mapper.AppendToMapping("Compact", (handler, _) =>
+		{
+			handler.PlatformView.MinWidth = 0;
+			handler.PlatformView.OnContent = null;
+			handler.PlatformView.OffContent = null;
 		});
 #endif
 

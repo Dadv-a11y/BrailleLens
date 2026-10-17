@@ -187,6 +187,7 @@ public class BrailleCell : ContentView
 
 	private void OnDotClicked(int dot)
 	{
+		Services.Haptics.Tap();
 		if (IsEditable)
 		{
 			Cell = Cell.Toggle(dot);

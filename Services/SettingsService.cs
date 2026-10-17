@@ -17,6 +17,7 @@ public sealed class SettingsService
 	public SettingsService(IPreferences preferences)
 	{
 		_preferences = preferences;
+		Haptics.IsEnabled = HapticFeedback;
 	}
 
 	public event EventHandler? Changed;
@@ -36,7 +37,11 @@ public sealed class SettingsService
 	public bool HapticFeedback
 	{
 		get => _preferences.Get(HapticFeedbackKey, true);
-		set => Set(HapticFeedbackKey, value);
+		set
+		{
+			Haptics.IsEnabled = value;
+			Set(HapticFeedbackKey, value);
+		}
 	}
 
 	public double LargeDotSize => CellSize == CellDisplaySize.Large ? 60 : 48;

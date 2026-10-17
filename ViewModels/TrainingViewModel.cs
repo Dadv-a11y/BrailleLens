@@ -305,6 +305,10 @@ public partial class TrainingViewModel : ObservableObject
 		LevelText = $"Niveau {_progress.Progress.Level}";
 		IsCorrect = correct;
 		FeedbackText = correct ? CorrectFeedback : WrongFeedback;
+		if (!correct)
+		{
+			Haptics.Alert();
+		}
 		IsAnswered = true;
 		SemanticScreenReader.Announce(correct ? FeedbackText : $"{FeedbackText} Réponse attendue : {Target}.");
 	}

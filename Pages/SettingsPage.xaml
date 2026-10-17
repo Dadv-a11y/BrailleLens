@@ -2,12 +2,48 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:c="clr-namespace:BrailleLens.Controls"
+             xmlns:vm="clr-namespace:BrailleLens.ViewModels"
              x:Class="BrailleLens.Pages.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
              Title="Paramètres"
              Shell.FlyoutBehavior="Disabled">
 
     <Grid RowDefinitions="Auto,*">
         <c:PageHeader Title="Paramètres" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24,8,24,24" Spacing="16" MaximumWidthRequest="520">
+                <Label Text="Affichage des cellules" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="12">
+                        <c:SettingRow Title="Numéros des points"
+                                      Description="Afficher les numéros 1 à 6 autour des points."
+                                      IsOn="{Binding ShowDotNumbers}" />
+                        <BoxView HeightRequest="1" Color="{StaticResource Border}" />
+                        <c:SettingRow Title="Grandes cellules"
+                                      Description="Agrandir les points pour les toucher plus facilement."
+                                      IsOn="{Binding UseLargeCells}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="Aperçu" Style="{StaticResource Caption}" />
+                <c:BrailleCell Cell="{Binding PreviewCell}"
+                               ShowNumbers="{Binding ShowDotNumbers}"
+                               DotSize="{Binding PreviewDotSize}" />
+
+                <Label Text="Retour tactile" Style="{StaticResource SectionTitle}" Margin="0,8,0,0" />
+                <Border Style="{StaticResource Card}">
+                    <c:SettingRow Title="Vibrations"
+                                  Description="Vibrer légèrement au toucher d'un point et en cas d'erreur."
+                                  IsOn="{Binding HapticFeedback}" />
+                </Border>
+
+                <Label Text="Les réglages sont enregistrés sur cet appareil uniquement."
+                       Style="{StaticResource Caption}"
+                       HorizontalTextAlignment="Center"
+                       Margin="0,8,0,0" />
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 
 </ContentPage>
