@@ -5,10 +5,11 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace BrailleLens.ViewModels;
 
-public partial class ConvertViewModel : ObservableObject
+public partial class ConvertViewModel : ObservableObject, IQueryAttributable
 {
 	public const string TextToBrailleTitle = "Texte → Braille";
 	public const string BrailleToTextTitle = "Braille → Texte";
+	public const string BrailleParameter = "braille";
 
 	private readonly SettingsService _settings;
 	private readonly List<BrailleCellModel> _cells = new();
@@ -16,6 +17,23 @@ public partial class ConvertViewModel : ObservableObject
 	public ConvertViewModel(SettingsService settings)
 	{
 		_settings = settings;
+	}
+
+	public void ApplyQueryAttributes(IDictionary<string, object> query)
+	{
+		if (!query.TryGetValue(BrailleParameter, out var value) || value is not string unicode)
+		{
+			return;
+		}
+
+		_cells.Clear();
+		foreach (var symbol in unicode)
+		{
+			_cells.Add(BrailleCellModel.TryFromUnicode(symbol, out var cell) ? cell : BrailleCellModel.Empty);
+		}
+		EditorCell = BrailleCellModel.Empty;
+		IsTextToBraille = false;
+		UpdateComposed();
 	}
 
 	[ObservableProperty]
