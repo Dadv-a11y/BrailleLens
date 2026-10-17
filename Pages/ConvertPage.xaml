@@ -2,12 +2,166 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:c="clr-namespace:BrailleLens.Controls"
+             xmlns:vm="clr-namespace:BrailleLens.ViewModels"
              x:Class="BrailleLens.Pages.ConvertPage"
+             x:DataType="vm:ConvertViewModel"
              Title="Convertir"
              Shell.FlyoutBehavior="Disabled">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*,Auto">
         <c:PageHeader Title="Convertir" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24,0,24,16" Spacing="16" MaximumWidthRequest="520">
+                <c:SelectorField Text="{Binding ModeTitle}"
+                                 AccessibleLabel="Mode de conversion"
+                                 Command="{Binding ToggleModeListCommand}" />
+
+                <Border IsVisible="{Binding IsModeListOpen}" Style="{StaticResource Card}" Padding="8">
+                    <VerticalStackLayout Spacing="4">
+                        <Grid HeightRequest="56">
+                            <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="16,0" InputTransparent="True">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsTextToBraille}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource PrimarySoft}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Texte → Braille"
+                                           FontFamily="Semibold"
+                                           VerticalTextAlignment="Center"
+                                           AutomationProperties.IsInAccessibleTree="False" />
+                                    <c:Icon Grid.Column="1"
+                                            Data="{StaticResource IconCheck}"
+                                            Color="{StaticResource Primary}"
+                                            IsVisible="{Binding IsTextToBraille}" />
+                                </Grid>
+                            </Border>
+                            <Button Style="{StaticResource TransparentButton}"
+                                    Command="{Binding SelectTextToBrailleCommand}"
+                                    SemanticProperties.Description="Texte vers braille" />
+                        </Grid>
+                        <Grid HeightRequest="56">
+                            <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="16,0" InputTransparent="True">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsBrailleToText}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource PrimarySoft}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Braille → Texte"
+                                           FontFamily="Semibold"
+                                           VerticalTextAlignment="Center"
+                                           AutomationProperties.IsInAccessibleTree="False" />
+                                    <c:Icon Grid.Column="1"
+                                            Data="{StaticResource IconCheck}"
+                                            Color="{StaticResource Primary}"
+                                            IsVisible="{Binding IsBrailleToText}" />
+                                </Grid>
+                            </Border>
+                            <Button Style="{StaticResource TransparentButton}"
+                                    Command="{Binding SelectBrailleToTextCommand}"
+                                    SemanticProperties.Description="Braille vers texte" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <VerticalStackLayout IsVisible="{Binding IsTextToBraille}" Spacing="16">
+                    <Label Text="Braille" Style="{StaticResource SectionTitle}" />
+                    <Border Style="{StaticResource Card}" MinimumHeightRequest="96">
+                        <Grid>
+                            <c:BrailleStrip Translation="{Binding Translation}" DotSize="12" />
+                            <Label IsVisible="{Binding IsTranslationEmpty}"
+                                   Text="Le braille apparaîtra ici."
+                                   Style="{StaticResource Secondary}"
+                                   VerticalTextAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <Label Text="{Binding TranslationSummary}" Style="{StaticResource Secondary}" />
+                    <Label IsVisible="{Binding HasUnsupported}"
+                           Text="{Binding UnsupportedText}"
+                           TextColor="{StaticResource Error}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                        <c:ActionButton Text="Copier"
+                                        Icon="{StaticResource IconCopy}"
+                                        Variant="Secondary"
+                                        Command="{Binding CopyBrailleCommand}" />
+                        <c:ActionButton Grid.Column="1"
+                                        Text="Partager"
+                                        Icon="{StaticResource IconShare}"
+                                        Variant="Secondary"
+                                        Command="{Binding ShareBrailleCommand}" />
+                    </Grid>
+                    <Label Text="Votre texte" Style="{StaticResource SectionTitle}" Margin="0,8,0,0" />
+                    <Border Style="{StaticResource Card}" Padding="12,4">
+                        <Editor Text="{Binding InputText}"
+                                Placeholder="Saisissez un texte"
+                                AutoSize="TextChanges"
+                                MinimumHeightRequest="140"
+                                SemanticProperties.Description="Votre texte" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout IsVisible="{Binding IsBrailleToText}" Spacing="16">
+                    <Label Text="Texte" Style="{StaticResource SectionTitle}" />
+                    <Border Style="{StaticResource Card}" MinimumHeightRequest="64">
+                        <Label Text="{Binding DecodedText}"
+                               FontFamily="Semibold"
+                               FontSize="24"
+                               VerticalTextAlignment="Center"
+                               SemanticProperties.Description="{Binding DecodedText, StringFormat='Texte : {0}'}" />
+                    </Border>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                        <c:ActionButton Text="Copier"
+                                        Icon="{StaticResource IconCopy}"
+                                        Variant="Secondary"
+                                        Command="{Binding CopyTextCommand}" />
+                        <c:ActionButton Grid.Column="1"
+                                        Text="Effacer"
+                                        Icon="{StaticResource IconTrash}"
+                                        Variant="Outline"
+                                        Command="{Binding ClearCommand}" />
+                    </Grid>
+                    <Label Text="Braille" Style="{StaticResource SectionTitle}" Margin="0,8,0,0" />
+                    <Border Style="{StaticResource Card}">
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="8">
+                            <c:BrailleStrip Grid.ColumnSpan="2"
+                                            Translation="{Binding ComposedTranslation}"
+                                            ShowLetters="False"
+                                            DotSize="10" />
+                            <Label Grid.Row="1"
+                                   Text="{Binding ComposedSummary}"
+                                   Style="{StaticResource Secondary}"
+                                   VerticalTextAlignment="Center" />
+                            <c:IconButton Grid.Row="1"
+                                          Grid.Column="1"
+                                          Icon="{StaticResource IconTrash}"
+                                          Color="{StaticResource TextSecondary}"
+                                          Description="Retirer la dernière cellule"
+                                          Command="{Binding RemoveLastCellCommand}" />
+                        </Grid>
+                    </Border>
+                    <Label Text="{Binding EditorHint}"
+                           Style="{StaticResource Secondary}"
+                           HorizontalTextAlignment="Center" />
+                    <c:BrailleCell Cell="{Binding EditorCell, Mode=TwoWay}"
+                                   IsEditable="True"
+                                   ShowNumbers="{Binding ShowDotNumbers}"
+                                   DotSize="{Binding DotSize}" />
+                    <Label Text="Validez une cellule vide pour ajouter un espace."
+                           Style="{StaticResource Caption}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <c:ActionButton Grid.Row="2"
+                        IsVisible="{Binding IsBrailleToText}"
+                        Text="Valider la cellule"
+                        Icon="{StaticResource IconCheck}"
+                        Command="{Binding ValidateCellCommand}"
+                        Margin="24,0,24,24"
+                        MaximumWidthRequest="520" />
     </Grid>
 
 </ContentPage>
