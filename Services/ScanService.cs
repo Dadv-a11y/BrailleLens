@@ -34,7 +34,19 @@ public sealed class ScanService
 	{
 		var photos = await MediaPicker.Default.PickPhotosAsync(new MediaPickerOptions { SelectionLimit = 1 });
 		var photo = photos?.FirstOrDefault();
-		return photo is null ? null : await AnalyzeAsync(photo);
+		if (photo is null)
+		{
+			return null;
+		}
+
+		try
+		{
+			return await AnalyzeAsync(photo);
+		}
+		finally
+		{
+			DeleteIfTemporary(photo.FullPath);
+		}
 	}
 
 	private static async Task<ScanResult> AnalyzeAsync(FileResult file)
