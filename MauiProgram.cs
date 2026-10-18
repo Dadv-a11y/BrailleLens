@@ -46,6 +46,13 @@ public static class MauiProgram
 		builder.Services.AddTransient<HelpPage>();
 		builder.Services.AddTransient<AboutPage>();
 
+#if ANDROID
+		Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping("NoUnderline", (handler, _) =>
+			handler.PlatformView.Background = null);
+		Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (handler, _) =>
+			handler.PlatformView.Background = null);
+#endif
+
 #if WINDOWS
 		Microsoft.Maui.Controls.Handlers.ShellHandler.Mapper.AppendToMapping("UseInAppNavigation", (handler, _) =>
 		{
