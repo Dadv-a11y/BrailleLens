@@ -62,7 +62,7 @@ public class LetterTile : ContentView
 		_button.SetBinding(Button.CommandProperty, new Binding(nameof(Command), source: this));
 		_button.SetBinding(Button.CommandParameterProperty, new Binding(nameof(CommandParameter), source: this));
 
-		HeightRequest = 64;
+		MinimumHeightRequest = 64;
 		Content = new Grid { Children = { _surface, _button } };
 		UpdateAppearance();
 	}

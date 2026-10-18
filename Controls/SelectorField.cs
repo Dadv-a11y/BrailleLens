@@ -45,7 +45,7 @@ public class SelectorField : ContentView
 			BackgroundColor = AppColors.PrimarySoft,
 			StrokeThickness = 0,
 			StrokeShape = new RoundRectangle { CornerRadius = 14 },
-			Padding = new Thickness(18, 0),
+			Padding = new Thickness(18, 12),
 			Content = row,
 			InputTransparent = true,
 		};
@@ -64,7 +64,7 @@ public class SelectorField : ContentView
 		_button.Clicked += (_, e) => Clicked?.Invoke(this, e);
 		SemanticProperties.SetHint(_button, "Ouvre la liste des choix");
 
-		HeightRequest = 56;
+		MinimumHeightRequest = 56;
 		Content = new Grid { Children = { surface, _button } };
 	}
 

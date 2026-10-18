@@ -19,7 +19,7 @@
 
                 <Border IsVisible="{Binding IsModeListOpen}" Style="{StaticResource Card}" Padding="8">
                     <VerticalStackLayout Spacing="4">
-                        <Grid HeightRequest="56">
+                        <Grid MinimumHeightRequest="56">
                             <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="16,0" InputTransparent="True">
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding IsTextToBraille}" Value="True">
@@ -41,7 +41,7 @@
                                     Command="{Binding SelectTextToBrailleCommand}"
                                     SemanticProperties.Description="Texte vers braille" />
                         </Grid>
-                        <Grid HeightRequest="56">
+                        <Grid MinimumHeightRequest="56">
                             <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" Padding="16,0" InputTransparent="True">
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding IsBrailleToText}" Value="True">

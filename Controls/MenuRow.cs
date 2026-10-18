@@ -41,7 +41,7 @@ public class MenuRow : ContentView
 		};
 		_button.SetBinding(Button.CommandProperty, new Binding(nameof(Command), source: this));
 
-		HeightRequest = 56;
+		MinimumHeightRequest = 56;
 		Content = new Grid { Children = { row, _button } };
 	}
 
